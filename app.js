@@ -29,7 +29,8 @@ const PRODUCTS = [
     cat: "Hogar",
     tienda: "Amazon",
     url: "https://link.amazon/B0fBcdnXh",
-    img: null,
+    img: "img/prod-stanley.jpg",
+    imgAlt: "Termo Stanley Quencher H2.0 FlowState azul, con asa, tapa y popote",
     mono: "St",
     beneficio: "El termo de la casa de Doña, sometido a una sola pregunta: ¿el hielo aguanta 12 horas?",
     situacion: "“El café de las 7 ya es historia a las 9… y del hielo ni hablamos.”",
@@ -48,7 +49,8 @@ const PRODUCTS = [
     cat: "Cocina",
     tienda: "Amazon",
     url: "https://link.amazon/B0eLenxoI",
-    img: null,
+    img: "img/prod-toosbuc.jpg",
+    imgAlt: "Set de utensilios de cocina de silicona gris dentro de su portautensilios",
     mono: "To",
     beneficio: "Las piezas de diario reunidas en un solo set: se acabó cazar la espátula perdida.",
     situacion: "“Tres generaciones en la misma cocina, y la espátula que todos buscan… desaparecida otra vez.”",
@@ -67,7 +69,8 @@ const PRODUCTS = [
     cat: "Tecnología sencilla",
     tienda: "Amazon",
     url: "https://link.amazon/B0dMmoMra",
-    img: null,
+    img: "img/prod-hollyland.jpg",
+    imgAlt: "Kit de micrófono inalámbrico de solapa: dos transmisores negros con clip y su estuche de carga",
     mono: "Ho",
     beneficio: "Se engancha a la ropa y la voz se escucha cerca, sin cables cruzando la casa.",
     situacion: "“Gritarle al teléfono desde la otra punta de la cocina no es estrategia de audio, mi'ja.”",
@@ -226,13 +229,100 @@ $("#searchBtn").addEventListener("click", () => {
   setTimeout(() => $("#q").focus({ preventScroll: true }), 450);
 });
 
-/* año y revelado suave */
+/* año y revelado suave (con escalonado dentro de cada grupo) */
 $("#year").textContent = new Date().getFullYear();
-if ("IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+if ("IntersectionObserver" in window && !reduceMotion) {
   const io = new IntersectionObserver((es) => es.forEach((x) => {
     if (x.isIntersecting) { x.target.classList.add("visible"); io.unobserve(x.target); }
   }), { threshold: 0.08 });
-  document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+  document.querySelectorAll(".reveal").forEach((el) => {
+    const siblings = [...el.parentElement.children].filter((c) => c.classList && c.classList.contains("reveal"));
+    el.style.setProperty("--d", Math.min(siblings.indexOf(el), 5) * 70 + "ms");
+    io.observe(el);
+  });
 } else {
   document.querySelectorAll(".reveal").forEach((el) => el.classList.add("visible"));
+}
+
+/* ---------- capa inmersiva (solo portada; todo respeta reduced-motion) ---------- */
+
+/* barra de progreso de lectura */
+const progress = $("#progress");
+if (progress) {
+  let ticking = false;
+  const paint = () => {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    progress.style.transform = `scaleX(${max > 0 ? Math.min(scrollY / max, 1) : 0})`;
+    ticking = false;
+  };
+  addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(paint); } }, { passive: true });
+  paint();
+}
+
+/* contadores animados (cifras estructurales reales del proyecto) */
+const counters = document.querySelectorAll("[data-count]");
+if (counters.length) {
+  const run = (el) => {
+    const end = +el.dataset.count, t0 = performance.now(), dur = 1100;
+    const step = (t) => {
+      const p = Math.min((t - t0) / dur, 1);
+      el.textContent = Math.round(end * (1 - Math.pow(1 - p, 3)));
+      if (p < 1) requestAnimationFrame(step);
+    };
+    if (reduceMotion) { el.textContent = end; } else { requestAnimationFrame(step); }
+  };
+  if ("IntersectionObserver" in window) {
+    const cio = new IntersectionObserver((es) => es.forEach((x) => {
+      if (x.isIntersecting) { run(x.target); cio.unobserve(x.target); }
+    }), { threshold: 0.4 });
+    counters.forEach((el) => cio.observe(el));
+  } else { counters.forEach(run); }
+}
+
+/* inclinación 3D suave: foto del hero y tarjetas (solo puntero fino) */
+if (!reduceMotion && matchMedia("(hover: hover) and (pointer: fine)").matches) {
+  let raf = null;
+  const apply = (el, e) => {
+    const r = el.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    const max = el.classList.contains("hero-img") ? 5 : 3.5;
+    el.style.transform = `perspective(900px) rotateX(${(-y * max).toFixed(2)}deg) rotateY(${(x * max).toFixed(2)}deg)`;
+  };
+  document.addEventListener("pointermove", (e) => {
+    const el = e.target.closest(".card, .hero-img");
+    if (raf) cancelAnimationFrame(raf);
+    if (el) { raf = requestAnimationFrame(() => apply(el, e)); }
+  });
+  document.addEventListener("pointerout", (e) => {
+    const el = e.target.closest(".card, .hero-img");
+    if (el && !el.contains(e.relatedTarget)) el.style.transform = "";
+  });
+}
+
+/* botón volver arriba + barra de acción móvil */
+const toTop = $("#toTop"), stickyCta = $("#stickyCta");
+addEventListener("scroll", () => {
+  const show = scrollY > 650;
+  if (toTop) toTop.classList.toggle("show", show);
+  if (stickyCta) stickyCta.classList.toggle("show", show);
+}, { passive: true });
+if (toTop) toTop.addEventListener("click", () => scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" }));
+
+/* destello dorado al tocar los botones principales */
+if (!reduceMotion) {
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest(".btn-accent"); if (!b) return;
+    for (let i = 0; i < 6; i++) {
+      const s = document.createElement("span");
+      s.className = "spark";
+      s.style.left = e.clientX + "px";
+      s.style.top = e.clientY + "px";
+      s.style.setProperty("--tx", (Math.random() * 90 - 45) + "px");
+      s.style.setProperty("--ty", (Math.random() * -70 - 12) + "px");
+      document.body.appendChild(s);
+      setTimeout(() => s.remove(), 750);
+    }
+  });
 }

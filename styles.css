@@ -221,10 +221,88 @@ dialog#detalle::backdrop{background:rgba(28,23,16,.5)}
 .pending{background:#FFF4D6;border:1px solid #E3C566;border-radius:8px;padding:.15rem .45rem;font-size:.92em;color:#6B5200}
 
 /* reveal */
-.reveal{opacity:0;transform:translateY(10px);transition:opacity .5s ease,transform .5s ease}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .6s cubic-bezier(.22,.61,.36,1) var(--d,0s),transform .6s cubic-bezier(.22,.61,.36,1) var(--d,0s)}
 .reveal.visible{opacity:1;transform:none}
 @media (prefers-reduced-motion: reduce){
   html{scroll-behavior:auto}
   .reveal{opacity:1;transform:none;transition:none}
   .btn{transition:none}
+}
+
+/* ---------- capa inmersiva ---------- */
+/* progreso de lectura */
+.progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:80;background:linear-gradient(90deg,var(--accent),#E9B44C);transform:scaleX(0);transform-origin:0 50%}
+
+/* hero con ambiente: resplandor cálido, foto flotante y chip */
+.hero{position:relative}
+.hero::before{content:"";position:absolute;inset:-2rem -1rem auto auto;width:560px;height:560px;max-width:90vw;background:radial-gradient(circle at 60% 40%,rgba(233,180,76,.20),rgba(192,5,15,.06) 55%,transparent 72%);filter:blur(10px);pointer-events:none}
+.hero-text,.hero-img{position:relative}
+.hero-img img{box-shadow:0 24px 50px -18px rgba(28,23,16,.35);animation:floaty 7s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.hero-chip{position:absolute;top:14px;right:14px;background:rgba(28,23,16,.88);color:#F5EFE2;font-size:.74rem;font-weight:700;letter-spacing:.05em;padding:.38rem .7rem;border-radius:999px;backdrop-filter:blur(4px)}
+
+/* cinta de marca */
+.marquee{overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--surface);padding:.65rem 0;margin-top:.6rem}
+.marquee-track{display:flex;width:max-content;font-family:"Fraunces",Georgia,serif;font-style:italic;font-size:1rem;color:var(--soft);animation:marquee 30s linear infinite}
+.marquee-half{display:flex;gap:1.6rem;padding-right:1.6rem;align-items:center}
+.marquee:hover .marquee-track{animation-play-state:paused}
+.marquee-track i{font-style:normal;color:#C99A2E;font-size:.8rem}
+@keyframes marquee{to{transform:translateX(-50%)}}
+
+/* cifras */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;padding:1.3rem 0 .4rem;text-align:left}
+@media(max-width:860px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat-n{display:block;font-family:"Fraunces",Georgia,serif;font-weight:700;font-size:2rem;color:var(--accent);line-height:1}
+.stat-l{font-size:.86rem;color:var(--muted)}
+
+/* tarjetas con vida: elevación, zoom de foto y brillo al pasar */
+.card{transition:transform .25s ease,box-shadow .25s ease;will-change:transform}
+.card:hover{box-shadow:0 18px 38px -16px rgba(28,23,16,.28)}
+.card-media img{transition:transform .5s ease}
+.card:hover .card-media img{transform:scale(1.05)}
+.cat-card,.state-card,.steps li{transition:transform .25s ease,box-shadow .25s ease,border-color .2s ease}
+.cat-card:hover,.state-card:hover,.steps li:hover{transform:translateY(-3px);box-shadow:0 12px 26px -14px rgba(28,23,16,.25)}
+
+/* botones: brillo que barre y respuesta al toque */
+.btn{position:relative;overflow:hidden;transition:background .15s ease,color .15s ease,transform .1s ease}
+.btn:active{transform:scale(.97)}
+.btn-accent::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.35) 50%,transparent 60%);transform:translateX(-120%);transition:transform .6s ease;pointer-events:none}
+.btn-accent:hover::after{transform:translateX(120%)}
+
+/* preguntas: apertura suave */
+.faq details p{animation:faqIn .3s ease}
+@keyframes faqIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.faq summary{transition:color .15s ease}
+.faq summary:hover{color:var(--accent)}
+
+/* diálogo con entrada */
+dialog#detalle[open]{animation:pop .28s cubic-bezier(.22,.61,.36,1)}
+dialog#detalle[open]::backdrop{animation:fadeIn .25s ease}
+@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* volver arriba */
+.to-top{position:fixed;right:18px;bottom:18px;z-index:70;width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:var(--ink);color:var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .25s ease,transform .25s ease;box-shadow:0 10px 24px -10px rgba(28,23,16,.4)}
+.to-top.show{opacity:1;pointer-events:auto;transform:none}
+
+/* barra de acción móvil */
+.sticky-cta{display:none}
+@media(max-width:820px){
+  .sticky-cta{position:fixed;left:10px;right:10px;bottom:10px;z-index:70;display:flex;gap:.5rem;justify-content:center;background:rgba(250,248,243,.94);border:1px solid var(--line);border-radius:999px;padding:.45rem;backdrop-filter:blur(8px);opacity:0;pointer-events:none;transform:translateY(10px);transition:opacity .25s ease,transform .25s ease}
+  .sticky-cta.show{opacity:1;pointer-events:auto;transform:none}
+  .to-top{bottom:84px}
+}
+
+/* destellos dorados */
+.spark{position:fixed;z-index:90;width:7px;height:7px;border-radius:50%;background:#E9B44C;pointer-events:none;animation:sparkFly .7s ease-out forwards}
+@keyframes sparkFly{to{transform:translate(var(--tx),var(--ty)) scale(.3);opacity:0}}
+
+@media (prefers-reduced-motion: reduce){
+  .hero-img img{animation:none}
+  .marquee-track{animation:none}
+  .card,.cat-card,.state-card,.steps li{transition:none}
+  .card-media img{transition:none}
+  .btn-accent::after{display:none}
+  dialog#detalle[open],dialog#detalle[open]::backdrop,.faq details p{animation:none}
+  .to-top,.sticky-cta{transition:none}
 }

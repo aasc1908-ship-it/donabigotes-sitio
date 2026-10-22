@@ -37,7 +37,7 @@
 {"@type":"Question","name":"¿Por qué las tarjetas no muestran precio?","acceptedAnswer":{"@type":"Answer","text":"Porque Amazon cambia precios y disponibilidad con frecuencia, y un precio impreso aquí hoy puede ser mentira mañana. El precio válido es el que Amazon muestra al abrir el enlace, justo antes de pagar."}},
 {"@type":"Question","name":"¿Quién me cobra, me envía y acepta devoluciones?","acceptedAnswer":{"@type":"Answer","text":"Amazon, en todos los casos de esta tienda. Esta página no vende, no cobra ni almacena productos: recomienda y enlaza. Pagos, envíos, garantías y devoluciones se rigen por las condiciones de Amazon."}},
 {"@type":"Question","name":"¿Cómo encuentro un producto que vi en un video?","acceptedAnswer":{"@type":"Answer","text":"Cada producto tiene un #número (su código de expediente). Escríbelo en el buscador de esta página — por ejemplo #01 — o busca en la sección Vistos en los videos, donde cada publicación enlaza su producto."}},
-{"@type":"Question","name":"¿Hay códigos de descuento?","acceptedAnswer":{"@type":"Answer","text":"Hoy, ninguno verificado — y esta tienda no publica códigos inventados. Un enlace de afiliado no es un descuento: si un día existe un código real, aparecerá aquí con su tienda, sus condiciones y su fecha de vencimiento."}},
+{"@type":"Question","name":"¿Hay códigos de descuento?","acceptedAnswer":{"@type":"Answer","text":"Hoy, ninguno verificado — y esta tienda no publica códigos inventados. Un enlace de afiliado no es un descuento: si un día existe un código real, aparecerá en grande en la sección Descuentos del día, con su tienda, sus condiciones y su fecha de vencimiento."}},
 {"@type":"Question","name":"¿Los productos están probados por Doña?","acceptedAnswer":{"@type":"Answer","text":"Solo en el estado que indique cada ficha. Doña es un personaje virtual: sus veredictos son criterio editorial. «Investigado», «demostrado» y «probado» significan cosas distintas aquí, y puedes ver la definición exacta en Criterios de selección. Ningún producto se marca como probado sin una prueba publicada."}}
 ]}
 </script>
@@ -54,6 +54,7 @@
     </a>
     <nav class="main-nav" id="mainNav" aria-label="Navegación principal">
       <a href="#productos">Productos</a>
+      <a href="#descuentos">Descuentos</a>
       <a href="#videos">Vistos en videos</a>
       <a href="#teatro">El Teatro</a>
       <a href="#criterios">Criterios</a>
@@ -122,6 +123,19 @@
       <p>Los expedientes activos en la mesa de Doña: su video de prueba está en camino.</p>
     </div>
     <div class="grid grid-feature" id="gridFeature"><!-- generado por app.js --></div>
+  </section>
+
+  <!-- DESCUENTOS DEL DÍA -->
+  <section class="section band" id="descuentos">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <h2>Descuentos del día</h2>
+        <p>El precio que vale es el que Amazon muestra al abrir el enlace, en ese momento. Por eso aquí no se imprimen descuentos que mañana serían mentira: cada botón te lleva a la oferta viva del producto exacto.</p>
+      </div>
+      <div class="promo-big reveal" id="promoBox"><!-- generado por app.js --></div>
+      <div class="deal-list reveal" id="dealGrid"><!-- generado por app.js --></div>
+      <p class="note reveal" id="dealDate"></p>
+    </div>
   </section>
 
   <section class="section wrap" id="productos">
@@ -291,7 +305,7 @@
       </details>
       <details>
         <summary>¿Hay códigos de descuento?</summary>
-        <p>Hoy, ninguno verificado — y esta tienda no publica códigos inventados. Un enlace de afiliado no es un descuento: si un día existe un código real, aparecerá aquí con su tienda, sus condiciones y su fecha de vencimiento.</p>
+        <p>Hoy, ninguno verificado — y esta tienda no publica códigos inventados. Un enlace de afiliado no es un descuento: si un día existe un código real, aparecerá en grande en la sección <a href="#descuentos">Descuentos del día</a>, con su tienda, sus condiciones y su fecha de vencimiento.</p>
       </details>
       <details>
         <summary>¿Los productos están probados por Doña?</summary>
@@ -352,6 +366,7 @@
     <nav aria-label="Navegación secundaria">
       <h3>Tienda</h3>
       <a href="#productos">Productos</a>
+      <a href="#descuentos">Descuentos del día</a>
       <a href="#videos">Vistos en videos</a>
       <a href="#buscador">Buscar por #número</a>
       <a href="#criterios">Criterios de selección</a>

@@ -224,6 +224,47 @@ function cardHTML(d) {
 /* destacados: los que tienen video en camino */
 $("#gridFeature").innerHTML = PRODUCTS.filter((d) => d.video).map(cardHTML).join("");
 
+/* ---------- Descuentos del día ----------
+   PROMO: cuando exista un código REAL verificado (de Amazon o de una marca),
+   se coloca aquí: { codigo: "XXXX", detalle: "…", vence: "AAAA-MM-DD" }.
+   Mientras sea null, el cajetín muestra su estado honesto. Nunca se inventa un código. */
+const PROMO = null;
+(function renderPromo() {
+  const box = $("#promoBox");
+  if (!box) return;
+  if (PROMO && PROMO.codigo) {
+    box.innerHTML = `<p class="promo-label">Código promocional verificado</p>
+      <p class="promo-code">${PROMO.codigo}</p>
+      <p class="promo-detalle">${PROMO.detalle}${PROMO.vence ? " · Vence: " + PROMO.vence : ""}</p>
+      <button class="btn btn-accent" id="promoCopy" type="button">Copiar código</button>`;
+    $("#promoCopy").addEventListener("click", () => {
+      const done = () => { $("#promoCopy").textContent = "✓ Copiado"; track("copiar_codigo", {}); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(PROMO.codigo).then(done).catch(done);
+      } else { done(); }
+    });
+  } else {
+    box.innerHTML = `<p class="promo-label">Código promocional</p>
+      <p class="promo-code promo-none">Sin código activo hoy</p>
+      <p class="promo-detalle">Cuando Amazon o una marca activen un código real para esta tienda, aparecerá aquí en grande, con su fecha de vencimiento. Códigos inventados, jamás: el bigote nunca miente.</p>`;
+  }
+})();
+
+/* ofertas del día: precio vivo en Amazon para cada expediente */
+(function renderDeals() {
+  const grid = $("#dealGrid");
+  if (!grid) return;
+  grid.innerHTML = PRODUCTS.map((d) =>
+    `<div class="deal-row">
+      <span class="deal-code">${d.codigo}</span>
+      <div class="deal-main"><strong>${d.marca} — ${d.nombre}</strong><span>${d.rangoLabel}</span></div>
+      <a class="btn btn-accent btn-sm" href="${affUrl(d.url)}" target="_blank" rel="sponsored noopener noreferrer" data-amazon="${d.id}">Consultar oferta de hoy ↗</a>
+    </div>`).join("");
+  const fecha = new Date().toLocaleDateString("es-US", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+  const nota = $("#dealDate");
+  if (nota) nota.textContent = "Ofertas consultadas en origen · " + fecha + " · Si un producto trae precio especial hoy en Amazon, lo ves al abrir su enlace.";
+})();
+
 /* categorías reales -> píldoras del buscador */
 const cats = [...new Set(PRODUCTS.map((d) => d.cat))];
 

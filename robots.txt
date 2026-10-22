@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# El sitemap se activa al publicar con dominio propio:
+# Sitemap: https://TUDOMINIO.com/sitemap.xml
